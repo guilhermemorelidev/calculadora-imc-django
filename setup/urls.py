@@ -19,5 +19,6 @@ from django.urls import path, include # Importamos o 'include'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('calculadora.urls')), # Deixe as aspas vazias aqui
+    path('', include('calculadora.urls')),# Deixe as aspas vazias aqui
+    path('letras/', include('contletras.urls'))
 ]
