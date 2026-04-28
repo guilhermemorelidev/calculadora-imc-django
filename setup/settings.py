@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calculadora',
-    'contletras'
+    'contletras',
+    'conversor',
 ]
 
 MIDDLEWARE = [
