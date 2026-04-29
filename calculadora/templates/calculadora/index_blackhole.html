@@ -1,0 +1,543 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Change Your Mind — Black Hole</title>
+
+  <!-- Tailwind CDN + Google Font -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            baskerville: ['"Libre Baskerville"', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --gold: #ffd37a;
+      --orange: #ff8a2a;
+      --deep-orange: #b84614;
+      --black: #010101;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #020202;
+      color: white;
+      font-family: "Libre Baskerville", Georgia, serif;
+    }
+
+    .space-bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255, 164, 57, .16), transparent 22rem),
+        radial-gradient(circle at 74% 45%, rgba(255, 212, 122, .10), transparent 26rem),
+        radial-gradient(circle at 18% 28%, rgba(255,255,255,.035), transparent 18rem),
+        #020202;
+    }
+
+    .stars,
+    .stars::before,
+    .stars::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.4px),
+        radial-gradient(circle, rgba(255,255,255,.45) 0 1px, transparent 1.2px),
+        radial-gradient(circle, rgba(255,190,110,.7) 0 1px, transparent 1.1px);
+      background-size: 180px 180px, 260px 260px, 370px 370px;
+      background-position: 20px 40px, 90px 110px, 140px 70px;
+      opacity: .42;
+      animation: driftStars 80s linear infinite;
+    }
+
+    .stars::before {
+      opacity: .25;
+      transform: scale(1.4) rotate(18deg);
+      animation-duration: 120s;
+    }
+
+    .stars::after {
+      opacity: .18;
+      transform: scale(1.9) rotate(-12deg);
+      animation-duration: 150s;
+    }
+
+    @keyframes driftStars {
+      from { transform: translate3d(0,0,0) rotate(0deg); }
+      to { transform: translate3d(-80px,70px,0) rotate(18deg); }
+    }
+
+    .scene {
+      position: relative;
+      width: min(94vw, 1180px);
+      height: min(78vh, 720px);
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .blackhole {
+      position: relative;
+      width: min(72vw, 760px);
+      aspect-ratio: 1.45;
+      display: grid;
+      place-items: center;
+      filter: drop-shadow(0 0 60px rgba(255, 149, 45, .45));
+      transform-style: preserve-3d;
+    }
+
+    .lens-glow {
+      position: absolute;
+      width: 70%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%,
+          transparent 0 33%,
+          rgba(255, 226, 146, .62) 35%,
+          rgba(255, 174, 63, .34) 42%,
+          rgba(255, 120, 28, .18) 52%,
+          transparent 67%);
+      filter: blur(8px);
+      opacity: .95;
+      transform: scaleY(.72);
+      animation: pulseGlow 4.2s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: .72; transform: scaleY(.72) scale(1); }
+      50% { opacity: 1; transform: scaleY(.72) scale(1.05); }
+    }
+
+    .disk {
+      position: absolute;
+      width: 92%;
+      height: 30%;
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg,
+          transparent 0%,
+          rgba(180, 55, 10, .32) 10%,
+          rgba(255, 105, 20, .78) 23%,
+          rgba(255, 231, 152, 1) 43%,
+          rgba(255, 251, 213, 1) 50%,
+          rgba(255, 177, 55, .92) 59%,
+          rgba(213, 72, 13, .68) 78%,
+          transparent 100%);
+      filter: blur(1.8px);
+      transform: rotate(-10deg);
+      z-index: 5;
+      mix-blend-mode: screen;
+      box-shadow:
+        0 0 38px rgba(255, 180, 70, .85),
+        0 0 120px rgba(255, 92, 20, .45);
+      overflow: hidden;
+    }
+
+    .disk::before,
+    .disk::after {
+      content: "";
+      position: absolute;
+      inset: -50%;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 18px,
+          rgba(255, 255, 255, .85) 21px 24px,
+          transparent 28px 52px
+        );
+      opacity: .37;
+      transform: rotate(6deg);
+    }
+
+    .disk::after {
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 32px,
+          rgba(255, 130, 32, .85) 36px 42px,
+          transparent 48px 74px
+        );
+      opacity: .45;
+      filter: blur(2px);
+    }
+
+    .disk-back {
+      position: absolute;
+      width: 58%;
+      height: 58%;
+      border-radius: 50%;
+      border: 46px solid transparent;
+      border-top-color: rgba(255, 222, 139, .94);
+      border-left-color: rgba(255, 148, 43, .72);
+      border-right-color: rgba(255, 186, 74, .72);
+      border-bottom-color: rgba(255, 120, 25, .20);
+      transform: rotate(-12deg) scaleY(.86);
+      filter: blur(2px);
+      z-index: 2;
+      box-shadow:
+        0 0 42px rgba(255, 213, 127, .62),
+        inset 0 0 32px rgba(255, 130, 30, .55);
+      mask-image: linear-gradient(to bottom, black 0 55%, transparent 58% 100%);
+    }
+
+    .disk-front {
+      position: absolute;
+      width: 62%;
+      height: 62%;
+      border-radius: 50%;
+      border: 42px solid transparent;
+      border-bottom-color: rgba(255, 220, 140, .92);
+      border-left-color: rgba(255, 126, 29, .55);
+      border-right-color: rgba(255, 169, 47, .72);
+      transform: rotate(-12deg) scaleY(.84);
+      filter: blur(1.4px);
+      z-index: 8;
+      box-shadow:
+        0 0 44px rgba(255, 184, 73, .62),
+        inset 0 0 24px rgba(255, 105, 24, .48);
+      mask-image: linear-gradient(to top, black 0 50%, transparent 54% 100%);
+      opacity: .93;
+    }
+
+    .event-horizon {
+      position: absolute;
+      width: 39%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      z-index: 7;
+      background:
+        radial-gradient(circle at 50% 50%,
+          #000 0 52%,
+          rgba(0,0,0,.98) 56%,
+          rgba(255, 190, 78, .27) 58%,
+          transparent 66%);
+      box-shadow:
+        inset 0 0 46px #000,
+        0 0 20px rgba(0,0,0,1),
+        0 0 52px rgba(255, 164, 48, .34);
+      transform: translateY(-1%) scaleY(.96);
+    }
+
+    .photon-ring {
+      position: absolute;
+      width: 45%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      z-index: 6;
+      border: 4px solid rgba(255, 226, 155, .9);
+      box-shadow:
+        0 0 18px rgba(255, 229, 163, .9),
+        0 0 64px rgba(255, 142, 38, .72),
+        inset 0 0 32px rgba(255, 131, 35, .55);
+      transform: scaleY(.95);
+      opacity: .9;
+    }
+
+    .jet {
+      position: absolute;
+      width: 52%;
+      height: 13%;
+      right: -8%;
+      top: 40%;
+      transform: rotate(9deg);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg,
+          rgba(255, 236, 169, .95),
+          rgba(255, 153, 49, .72),
+          rgba(255, 92, 22, .22),
+          transparent);
+      filter: blur(7px);
+      opacity: .75;
+      z-index: 3;
+      mix-blend-mode: screen;
+    }
+
+    .jet-left {
+      left: -8%;
+      right: auto;
+      top: 49%;
+      transform: rotate(189deg);
+      opacity: .48;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .06;
+      z-index: 40;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='.85'/%3E%3C/svg%3E");
+    }
+
+    .title {
+      position: absolute;
+      top: clamp(2rem, 8vh, 5rem);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      width: min(92vw, 980px);
+      text-align: center;
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: clamp(2.7rem, 8vw, 7.7rem);
+      line-height: .92;
+      letter-spacing: -.075em;
+      font-weight: 700;
+      text-shadow:
+        0 0 28px rgba(255, 174, 72, .35),
+        0 16px 80px rgba(0,0,0,.9);
+    }
+
+    .title .char {
+      display: inline-block;
+      min-width: .08em;
+      transform-origin: 50% 75%;
+    }
+
+    .subtitle {
+      position: absolute;
+      bottom: clamp(1.5rem, 5vh, 3.8rem);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      width: min(90vw, 720px);
+      text-align: center;
+      color: rgba(255,255,255,.66);
+      font-family: Inter, system-ui, sans-serif;
+      font-size: .82rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at center, transparent 0 38%, rgba(0,0,0,.28) 68%, rgba(0,0,0,.86) 100%);
+      z-index: 30;
+    }
+
+    @media (max-width: 768px) {
+      .scene {
+        width: 100vw;
+        height: 78vh;
+      }
+
+      .blackhole {
+        width: 112vw;
+      }
+
+      .title {
+        top: 3.8rem;
+      }
+
+      .subtitle {
+        bottom: 2rem;
+        padding-inline: 1rem;
+      }
+
+      .disk {
+        height: 26%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="space-bg">
+    <div class="stars"></div>
+  </div>
+
+  <main class="relative min-h-screen grid place-items-center px-4">
+    <h1 class="title" id="animatedTitle" aria-label="change your mind">change your mind</h1>
+
+    <section class="scene" aria-label="Buraco negro animado">
+      <div class="blackhole" id="blackhole">
+        <div class="lens-glow"></div>
+
+        <div class="jet jet-left"></div>
+        <div class="jet"></div>
+
+        <div class="disk-back spin-layer"></div>
+        <div class="photon-ring"></div>
+        <div class="event-horizon"></div>
+        <div class="disk spin-fast"></div>
+        <div class="disk-front spin-layer-reverse"></div>
+      </div>
+    </section>
+
+    <p class="subtitle">
+      animated with anime.js • django template • tailwind cdn
+    </p>
+  </main>
+
+  <div class="vignette"></div>
+  <div class="noise"></div>
+
+  <script type="module">
+    import { animate } from 'https://esm.sh/animejs';
+
+    const title = document.querySelector('#animatedTitle');
+    const originalText = 'change your mind';
+    const glyphs = 'abcdefghijklmnopqrstuvwxyz0123456789@$#%&*';
+
+    function splitTitle(text) {
+      title.innerHTML = text
+        .split('')
+        .map((char) => {
+          if (char === ' ') return '<span class="char">&nbsp;</span>';
+          return `<span class="char">${char}</span>`;
+        })
+        .join('');
+    }
+
+    splitTitle(originalText);
+
+    animate('.title .char', {
+      translateY: [48, 0],
+      opacity: [0, 1],
+      rotateX: [-60, 0],
+      delay: (_, i) => i * 55,
+      duration: 950,
+      ease: 'outExpo'
+    });
+
+    function scrambleText() {
+      const chars = [...title.querySelectorAll('.char')];
+
+      chars.forEach((span, index) => {
+        const target = originalText[index];
+
+        if (target === ' ') return;
+
+        let count = 0;
+        const max = 6 + Math.floor(Math.random() * 8);
+
+        const timer = setInterval(() => {
+          span.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+          span.style.opacity = String(.55 + Math.random() * .45);
+
+          count++;
+
+          if (count >= max) {
+            clearInterval(timer);
+            span.textContent = target;
+            span.style.opacity = '1';
+
+            animate(span, {
+              translateY: [-10, 0],
+              scale: [1.16, 1],
+              opacity: [.65, 1],
+              duration: 420,
+              ease: 'outExpo'
+            });
+          }
+        }, 34 + index * 2);
+      });
+    }
+
+    setInterval(scrambleText, 2600);
+
+    animate('.spin-fast', {
+      rotate: '+=360',
+      duration: 4200,
+      loop: true,
+      ease: 'linear'
+    });
+
+    animate('.spin-layer', {
+      rotate: '+=360',
+      duration: 10500,
+      loop: true,
+      ease: 'linear'
+    });
+
+    animate('.spin-layer-reverse', {
+      rotate: '-=360',
+      duration: 8500,
+      loop: true,
+      ease: 'linear'
+    });
+
+    animate('.photon-ring', {
+      scale: [
+        { to: 1.03, duration: 1700 },
+        { to: .98, duration: 1700 }
+      ],
+      opacity: [
+        { to: 1, duration: 1700 },
+        { to: .72, duration: 1700 }
+      ],
+      loop: true,
+      alternate: true,
+      ease: 'inOutSine'
+    });
+
+    animate('.jet', {
+      opacity: [
+        { to: .95, duration: 1300 },
+        { to: .42, duration: 1700 }
+      ],
+      scaleX: [
+        { to: 1.08, duration: 1300 },
+        { to: .94, duration: 1700 }
+      ],
+      loop: true,
+      alternate: true,
+      ease: 'inOutSine'
+    });
+
+    animate('#blackhole', {
+      translateY: [
+        { to: -14, duration: 2800 },
+        { to: 8, duration: 2800 }
+      ],
+      scale: [
+        { to: 1.018, duration: 2800 },
+        { to: .992, duration: 2800 }
+      ],
+      loop: true,
+      alternate: true,
+      ease: 'inOutSine'
+    });
+
+    window.addEventListener('mousemove', (event) => {
+      const x = (event.clientX / window.innerWidth - .5) * 20;
+      const y = (event.clientY / window.innerHeight - .5) * 16;
+
+      animate('#blackhole', {
+        translateX: x,
+        translateY: y,
+        duration: 800,
+        ease: 'outExpo'
+      });
+    });
+  </script>
+</body>
+</html>

@@ -41,4 +41,10 @@ def pagina2(request):
 def pagina3(request):
     return render(request, 'calculadora/index3.html')
   
+def pagina4(request):
+    return render(request, 'calculadora/index_planto.html')
   
+def pagina5(request):
+    return render(request, 'calculadora/index_brutalist.html')
+def pagina6(request):
+    return render(request, 'calculadora/index_blackhole.html')
