@@ -1,543 +1,808 @@
 {% load static %}
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Change Your Mind — Black Hole</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Change Your Mind — Black Hole 3D</title>
 
-  <!-- Tailwind CDN + Google Font -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+    />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            baskerville: ['"Libre Baskerville"', 'Georgia', 'serif'],
-          }
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #020203;
+        --ember: #ff9d25;
+        --hot: #fff2b8;
+        --red: #a12a08;
+        --cyan: #77d8ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        color: white;
+        background: var(--bg);
+        font-family: Inter, system-ui, sans-serif;
+      }
+
+      nav.container-fluid {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 30;
+        padding: 1.1rem clamp(1rem, 3vw, 2.2rem);
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(2, 2, 3, 0.56), transparent);
+      }
+
+      nav a,
+      nav strong {
+        color: rgba(255, 255, 255, 0.72);
+        text-decoration: none;
+      }
+
+      nav a[role="button"] {
+        --pico-background-color: rgba(255, 157, 37, 0.13);
+        --pico-border-color: rgba(255, 206, 124, 0.28);
+        --pico-color: rgba(255, 255, 255, 0.86);
+        backdrop-filter: blur(14px);
+      }
+
+      main.container {
+        position: relative;
+        width: 100%;
+        max-width: none;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        isolation: isolate;
+      }
+
+      .space {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background:
+          radial-gradient(
+            circle at 50% 48%,
+            rgba(255, 160, 38, 0.16),
+            transparent 21rem
+          ),
+          radial-gradient(
+            circle at 72% 45%,
+            rgba(112, 196, 255, 0.07),
+            transparent 24rem
+          ),
+          radial-gradient(
+            circle at 30% 60%,
+            rgba(255, 95, 16, 0.07),
+            transparent 20rem
+          ),
+          #020203;
+        z-index: -4;
+      }
+
+      .stars,
+      .stars::before,
+      .stars::after {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        background-image:
+          radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.95) 0 1px,
+            transparent 1.45px
+          ),
+          radial-gradient(
+            circle,
+            rgba(255, 218, 168, 0.55) 0 1px,
+            transparent 1.25px
+          ),
+          radial-gradient(
+            circle,
+            rgba(122, 208, 255, 0.35) 0 1px,
+            transparent 1.3px
+          );
+        background-size:
+          170px 170px,
+          260px 260px,
+          390px 390px;
+        opacity: 0.46;
+        animation: drift 120s linear infinite;
+      }
+
+      .stars::before {
+        transform: scale(1.25) rotate(18deg);
+        animation-duration: 170s;
+        opacity: 0.42;
+      }
+
+      .stars::after {
+        transform: scale(1.55) rotate(-12deg);
+        animation-duration: 230s;
+        opacity: 0.28;
+      }
+
+      @keyframes drift {
+        to {
+          transform: translate3d(-110px, 75px, 0) rotate(7deg);
         }
       }
-    }
-  </script>
 
-  <style>
-    :root {
-      --gold: #ffd37a;
-      --orange: #ff8a2a;
-      --deep-orange: #b84614;
-      --black: #010101;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      overflow: hidden;
-      background: #020202;
-      color: white;
-      font-family: "Libre Baskerville", Georgia, serif;
-    }
-
-    .space-bg {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 42%, rgba(255, 164, 57, .16), transparent 22rem),
-        radial-gradient(circle at 74% 45%, rgba(255, 212, 122, .10), transparent 26rem),
-        radial-gradient(circle at 18% 28%, rgba(255,255,255,.035), transparent 18rem),
-        #020202;
-    }
-
-    .stars,
-    .stars::before,
-    .stars::after {
-      content: "";
-      position: absolute;
-      inset: -20%;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.4px),
-        radial-gradient(circle, rgba(255,255,255,.45) 0 1px, transparent 1.2px),
-        radial-gradient(circle, rgba(255,190,110,.7) 0 1px, transparent 1.1px);
-      background-size: 180px 180px, 260px 260px, 370px 370px;
-      background-position: 20px 40px, 90px 110px, 140px 70px;
-      opacity: .42;
-      animation: driftStars 80s linear infinite;
-    }
-
-    .stars::before {
-      opacity: .25;
-      transform: scale(1.4) rotate(18deg);
-      animation-duration: 120s;
-    }
-
-    .stars::after {
-      opacity: .18;
-      transform: scale(1.9) rotate(-12deg);
-      animation-duration: 150s;
-    }
-
-    @keyframes driftStars {
-      from { transform: translate3d(0,0,0) rotate(0deg); }
-      to { transform: translate3d(-80px,70px,0) rotate(18deg); }
-    }
-
-    .scene {
-      position: relative;
-      width: min(94vw, 1180px);
-      height: min(78vh, 720px);
-      display: grid;
-      place-items: center;
-      isolation: isolate;
-    }
-
-    .blackhole {
-      position: relative;
-      width: min(72vw, 760px);
-      aspect-ratio: 1.45;
-      display: grid;
-      place-items: center;
-      filter: drop-shadow(0 0 60px rgba(255, 149, 45, .45));
-      transform-style: preserve-3d;
-    }
-
-    .lens-glow {
-      position: absolute;
-      width: 70%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 50% 50%,
-          transparent 0 33%,
-          rgba(255, 226, 146, .62) 35%,
-          rgba(255, 174, 63, .34) 42%,
-          rgba(255, 120, 28, .18) 52%,
-          transparent 67%);
-      filter: blur(8px);
-      opacity: .95;
-      transform: scaleY(.72);
-      animation: pulseGlow 4.2s ease-in-out infinite;
-      z-index: 1;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { opacity: .72; transform: scaleY(.72) scale(1); }
-      50% { opacity: 1; transform: scaleY(.72) scale(1.05); }
-    }
-
-    .disk {
-      position: absolute;
-      width: 92%;
-      height: 30%;
-      border-radius: 999px;
-      background:
-        linear-gradient(90deg,
-          transparent 0%,
-          rgba(180, 55, 10, .32) 10%,
-          rgba(255, 105, 20, .78) 23%,
-          rgba(255, 231, 152, 1) 43%,
-          rgba(255, 251, 213, 1) 50%,
-          rgba(255, 177, 55, .92) 59%,
-          rgba(213, 72, 13, .68) 78%,
-          transparent 100%);
-      filter: blur(1.8px);
-      transform: rotate(-10deg);
-      z-index: 5;
-      mix-blend-mode: screen;
-      box-shadow:
-        0 0 38px rgba(255, 180, 70, .85),
-        0 0 120px rgba(255, 92, 20, .45);
-      overflow: hidden;
-    }
-
-    .disk::before,
-    .disk::after {
-      content: "";
-      position: absolute;
-      inset: -50%;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          transparent 0 18px,
-          rgba(255, 255, 255, .85) 21px 24px,
-          transparent 28px 52px
-        );
-      opacity: .37;
-      transform: rotate(6deg);
-    }
-
-    .disk::after {
-      background:
-        repeating-linear-gradient(
-          90deg,
-          transparent 0 32px,
-          rgba(255, 130, 32, .85) 36px 42px,
-          transparent 48px 74px
-        );
-      opacity: .45;
-      filter: blur(2px);
-    }
-
-    .disk-back {
-      position: absolute;
-      width: 58%;
-      height: 58%;
-      border-radius: 50%;
-      border: 46px solid transparent;
-      border-top-color: rgba(255, 222, 139, .94);
-      border-left-color: rgba(255, 148, 43, .72);
-      border-right-color: rgba(255, 186, 74, .72);
-      border-bottom-color: rgba(255, 120, 25, .20);
-      transform: rotate(-12deg) scaleY(.86);
-      filter: blur(2px);
-      z-index: 2;
-      box-shadow:
-        0 0 42px rgba(255, 213, 127, .62),
-        inset 0 0 32px rgba(255, 130, 30, .55);
-      mask-image: linear-gradient(to bottom, black 0 55%, transparent 58% 100%);
-    }
-
-    .disk-front {
-      position: absolute;
-      width: 62%;
-      height: 62%;
-      border-radius: 50%;
-      border: 42px solid transparent;
-      border-bottom-color: rgba(255, 220, 140, .92);
-      border-left-color: rgba(255, 126, 29, .55);
-      border-right-color: rgba(255, 169, 47, .72);
-      transform: rotate(-12deg) scaleY(.84);
-      filter: blur(1.4px);
-      z-index: 8;
-      box-shadow:
-        0 0 44px rgba(255, 184, 73, .62),
-        inset 0 0 24px rgba(255, 105, 24, .48);
-      mask-image: linear-gradient(to top, black 0 50%, transparent 54% 100%);
-      opacity: .93;
-    }
-
-    .event-horizon {
-      position: absolute;
-      width: 39%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      z-index: 7;
-      background:
-        radial-gradient(circle at 50% 50%,
-          #000 0 52%,
-          rgba(0,0,0,.98) 56%,
-          rgba(255, 190, 78, .27) 58%,
-          transparent 66%);
-      box-shadow:
-        inset 0 0 46px #000,
-        0 0 20px rgba(0,0,0,1),
-        0 0 52px rgba(255, 164, 48, .34);
-      transform: translateY(-1%) scaleY(.96);
-    }
-
-    .photon-ring {
-      position: absolute;
-      width: 45%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      z-index: 6;
-      border: 4px solid rgba(255, 226, 155, .9);
-      box-shadow:
-        0 0 18px rgba(255, 229, 163, .9),
-        0 0 64px rgba(255, 142, 38, .72),
-        inset 0 0 32px rgba(255, 131, 35, .55);
-      transform: scaleY(.95);
-      opacity: .9;
-    }
-
-    .jet {
-      position: absolute;
-      width: 52%;
-      height: 13%;
-      right: -8%;
-      top: 40%;
-      transform: rotate(9deg);
-      border-radius: 999px;
-      background:
-        linear-gradient(90deg,
-          rgba(255, 236, 169, .95),
-          rgba(255, 153, 49, .72),
-          rgba(255, 92, 22, .22),
-          transparent);
-      filter: blur(7px);
-      opacity: .75;
-      z-index: 3;
-      mix-blend-mode: screen;
-    }
-
-    .jet-left {
-      left: -8%;
-      right: auto;
-      top: 49%;
-      transform: rotate(189deg);
-      opacity: .48;
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .06;
-      z-index: 40;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='.85'/%3E%3C/svg%3E");
-    }
-
-    .title {
-      position: absolute;
-      top: clamp(2rem, 8vh, 5rem);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      width: min(92vw, 980px);
-      text-align: center;
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: clamp(2.7rem, 8vw, 7.7rem);
-      line-height: .92;
-      letter-spacing: -.075em;
-      font-weight: 700;
-      text-shadow:
-        0 0 28px rgba(255, 174, 72, .35),
-        0 16px 80px rgba(0,0,0,.9);
-    }
-
-    .title .char {
-      display: inline-block;
-      min-width: .08em;
-      transform-origin: 50% 75%;
-    }
-
-    .subtitle {
-      position: absolute;
-      bottom: clamp(1.5rem, 5vh, 3.8rem);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      width: min(90vw, 720px);
-      text-align: center;
-      color: rgba(255,255,255,.66);
-      font-family: Inter, system-ui, sans-serif;
-      font-size: .82rem;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .vignette {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at center, transparent 0 38%, rgba(0,0,0,.28) 68%, rgba(0,0,0,.86) 100%);
-      z-index: 30;
-    }
-
-    @media (max-width: 768px) {
-      .scene {
-        width: 100vw;
-        height: 78vh;
+      #blackhole-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        display: block;
       }
 
-      .blackhole {
-        width: 112vw;
+      .halo {
+        position: absolute;
+        width: min(68vw, 820px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        z-index: 0;
+        background:
+          radial-gradient(
+            circle,
+            transparent 0 23%,
+            rgba(255, 231, 164, 0.34) 24%,
+            rgba(255, 144, 33, 0.2) 31%,
+            transparent 47%
+          ),
+          radial-gradient(
+            circle,
+            transparent 0 35%,
+            rgba(99, 181, 255, 0.08) 36%,
+            transparent 62%
+          );
+        filter: blur(14px) saturate(1.28);
+        opacity: 0.75;
+        animation: haloBreath 5.5s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+
+      @keyframes haloBreath {
+        from {
+          transform: scale(0.97);
+          opacity: 0.58;
+        }
+
+        to {
+          transform: scale(1.06);
+          opacity: 0.92;
+        }
+      }
+
+      .title-wrap {
+        position: fixed;
+        top: clamp(4.7rem, 8vh, 6.3rem);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        width: min(94vw, 1120px);
+        display: grid;
+        justify-items: center;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.65rem;
+        color: rgba(255, 214, 151, 0.54);
+        letter-spacing: 0.36em;
+        text-transform: uppercase;
+        font-size: clamp(0.58rem, 1.2vw, 0.78rem);
+        font-weight: 800;
       }
 
       .title {
-        top: 3.8rem;
+        margin: 0;
+        color: #fff7e9;
+        font-family: "Libre Baskerville", Georgia, serif;
+        font-size: clamp(2.55rem, 8.2vw, 8.15rem);
+        line-height: 1;
+        letter-spacing: -0.078em;
+        font-weight: 700;
+        white-space: nowrap;
+        text-shadow:
+          0 0 18px rgba(255, 244, 205, 0.25),
+          0 0 46px rgba(255, 137, 30, 0.32),
+          0 22px 90px rgba(0, 0, 0, 0.95);
+        font-kerning: normal;
+        font-variant-ligatures: none;
+      }
+
+      /*
+      Correção do problema do "d" descendo:
+      - o texto original não tem espaço sobrando no final;
+      - cada letra tem height e line-height fixos;
+      - vertical-align fica travado na baseline;
+      - o scramble sempre reseta translateY para 0.
+    */
+      .title .char {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-width: 0.12em;
+        height: 1em;
+        line-height: 1;
+        vertical-align: baseline;
+        transform-origin: 50% 50%;
+        will-change: transform, opacity, filter;
+      }
+
+      .title .space-char {
+        min-width: 0.34em;
       }
 
       .subtitle {
-        bottom: 2rem;
-        padding-inline: 1rem;
+        position: fixed;
+        bottom: clamp(1.6rem, 4.4vh, 3.2rem);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        width: min(90vw, 760px);
+        margin: 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: clamp(0.68rem, 1.3vw, 0.88rem);
+        letter-spacing: 0.17em;
+        line-height: 1.9;
+        text-transform: uppercase;
+        pointer-events: none;
       }
 
-      .disk {
-        height: 26%;
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            circle at 50% 52%,
+            transparent 0 34%,
+            rgba(0, 0, 0, 0.3) 62%,
+            rgba(0, 0, 0, 0.8) 100%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.26),
+            transparent 30%,
+            rgba(0, 0, 0, 0.44)
+          );
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div class="space-bg">
-    <div class="stars"></div>
-  </div>
+      .noise {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        pointer-events: none;
+        opacity: 0.045;
+        mix-blend-mode: screen;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+      }
 
-  <main class="relative min-h-screen grid place-items-center px-4">
-    <h1 class="title" id="animatedTitle" aria-label="change your mind">change your mind</h1>
+      section[aria-label="Subscribe example"],
+      footer.container {
+        display: none;
+      }
 
-    <section class="scene" aria-label="Buraco negro animado">
-      <div class="blackhole" id="blackhole">
-        <div class="lens-glow"></div>
+      @media (max-width: 680px) {
+        nav.container-fluid {
+          display: none;
+        }
 
-        <div class="jet jet-left"></div>
-        <div class="jet"></div>
+        .title {
+          white-space: normal;
+          max-width: 9ch;
+          letter-spacing: -0.065em;
+        }
 
-        <div class="disk-back spin-layer"></div>
-        <div class="photon-ring"></div>
-        <div class="event-horizon"></div>
-        <div class="disk spin-fast"></div>
-        <div class="disk-front spin-layer-reverse"></div>
+        .title-wrap {
+          top: 3.4rem;
+        }
+
+        .subtitle {
+          letter-spacing: 0.11em;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .stars,
+        .stars::before,
+        .stars::after,
+        .halo {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="container-fluid">
+      <ul>
+        <li><strong>Change Your Mind</strong></li>
+      </ul>
+      <ul>
+        <li><a href="#">Singularity</a></li>
+        <li><a href="#">Accretion</a></li>
+        <li><a href="#" role="button">Enter orbit</a></li>
+      </ul>
+    </nav>
+
+    <main class="container">
+      <div class="space" aria-hidden="true">
+        <div class="stars"></div>
       </div>
-    </section>
 
-    <p class="subtitle">
-      animated with anime.js • django template • tailwind cdn
-    </p>
-  </main>
+      <canvas
+        id="blackhole-canvas"
+        aria-label="Buraco negro 3D com disco de acreção"
+      ></canvas>
 
-  <div class="vignette"></div>
-  <div class="noise"></div>
+      <div class="halo" aria-hidden="true"></div>
 
-  <script type="module">
-    import { animate } from 'https://esm.sh/animejs';
+      <div class="title-wrap">
+        <p class="eyebrow">relativistic thought engine</p>
+        <h1 class="title" id="animatedTitle" aria-label="change your mind">
+          change your mind
+        </h1>
+      </div>
 
-    const title = document.querySelector('#animatedTitle');
-    const originalText = 'change your mind';
-    const glyphs = 'abcdefghijklmnopqrstuvwxyz0123456789@$#%&*';
+      <p class="subtitle">
+        three.js accretion disk • particle turbulence • locked text baseline
+      </p>
 
-    function splitTitle(text) {
-      title.innerHTML = text
-        .split('')
-        .map((char) => {
-          if (char === ' ') return '<span class="char">&nbsp;</span>';
-          return `<span class="char">${char}</span>`;
-        })
-        .join('');
-    }
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="noise" aria-hidden="true"></div>
 
-    splitTitle(originalText);
+      <section aria-label="Subscribe example">
+        <div class="container">
+          <article>
+            <hgroup>
+              <h2>Stay in orbit</h2>
+              <h3>Receive transmissions from the event horizon.</h3>
+            </hgroup>
 
-    animate('.title .char', {
-      translateY: [48, 0],
-      opacity: [0, 1],
-      rotateX: [-60, 0],
-      delay: (_, i) => i * 55,
-      duration: 950,
-      ease: 'outExpo'
-    });
+            <form class="grid">
+              <input
+                type="text"
+                id="firstname"
+                name="firstname"
+                placeholder="First name"
+                aria-label="First name"
+                required
+              />
 
-    function scrambleText() {
-      const chars = [...title.querySelectorAll('.char')];
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                aria-label="Email"
+                required
+              />
 
-      chars.forEach((span, index) => {
-        const target = originalText[index];
+              <button type="submit" onclick="event.preventDefault()">
+                Subscribe
+              </button>
+            </form>
+          </article>
+        </div>
+      </section>
 
-        if (target === ' ') return;
+      <footer class="container">
+        <small> <a href="#">Privacy</a> • <a href="#">Contact</a> </small>
+      </footer>
+    </main>
 
-        let count = 0;
-        const max = 6 + Math.floor(Math.random() * 8);
+    <script type="module">
+      import * as THREE from "https://esm.sh/three@0.160.0";
+      import { EffectComposer } from "https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js";
+      import { RenderPass } from "https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js";
+      import { UnrealBloomPass } from "https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+      import { animate } from "https://esm.sh/animejs@4.0.2";
 
-        const timer = setInterval(() => {
-          span.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
-          span.style.opacity = String(.55 + Math.random() * .45);
+      const canvas = document.querySelector("#blackhole-canvas");
 
-          count++;
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x020203, 0.018);
 
-          if (count >= max) {
-            clearInterval(timer);
-            span.textContent = target;
-            span.style.opacity = '1';
+      const camera = new THREE.PerspectiveCamera(
+        42,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        140,
+      );
 
-            animate(span, {
-              translateY: [-10, 0],
-              scale: [1.16, 1],
-              opacity: [.65, 1],
-              duration: 420,
-              ease: 'outExpo'
-            });
+      camera.position.set(0, 4.1, 12.2);
+      camera.lookAt(0, 0, 0);
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
+
+      const composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+
+      const bloom = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        1.25,
+        0.55,
+        0.08,
+      );
+
+      composer.addPass(bloom);
+
+      const root = new THREE.Group();
+      root.rotation.x = THREE.MathUtils.degToRad(-10);
+      scene.add(root);
+
+      const horizon = new THREE.Mesh(
+        new THREE.SphereGeometry(1.58, 96, 96),
+        new THREE.MeshBasicMaterial({ color: 0x000000 }),
+      );
+
+      horizon.scale.set(1.02, 1.02, 1.02);
+      root.add(horizon);
+
+      const photonRing = new THREE.Mesh(
+        new THREE.TorusGeometry(1.72, 0.025, 16, 180),
+        new THREE.MeshBasicMaterial({
+          color: 0xffe6a9,
+          transparent: true,
+          opacity: 0.92,
+        }),
+      );
+
+      photonRing.rotation.x = Math.PI / 2;
+      root.add(photonRing);
+
+      const aura = new THREE.Mesh(
+        new THREE.SphereGeometry(1.84, 96, 96),
+        new THREE.MeshBasicMaterial({
+          color: 0xff8a1f,
+          transparent: true,
+          opacity: 0.12,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        }),
+      );
+
+      root.add(aura);
+
+      function makeDisk({
+        count = 13500,
+        inner = 2.05,
+        outer = 5.7,
+        yLift = 0,
+        size = 0.035,
+        frontBoost = 1,
+      }) {
+        const positions = new Float32Array(count * 3);
+        const colors = new Float32Array(count * 3);
+        const sizes = new Float32Array(count);
+        const randoms = new Float32Array(count);
+
+        const hot = new THREE.Color(0xfff4bc);
+        const gold = new THREE.Color(0xffaa32);
+        const red = new THREE.Color(0x9b2608);
+        const blue = new THREE.Color(0x7ad7ff);
+
+        for (let i = 0; i < count; i++) {
+          const t = Math.random();
+          const radius = inner + Math.pow(t, 0.72) * (outer - inner);
+          const theta = Math.random() * Math.PI * 2;
+          const turbulence = (Math.random() - 0.5) * 0.12 * (1 + t);
+          const spiral = theta + radius * 0.58 + Math.sin(radius * 3.1) * 0.2;
+
+          positions[i * 3 + 0] = Math.cos(spiral) * radius;
+          positions[i * 3 + 1] =
+            (Math.random() - 0.5) * 0.13 + yLift + turbulence;
+          positions[i * 3 + 2] = Math.sin(spiral) * radius * 0.86;
+
+          const doppler = Math.cos(spiral - 0.35) * 0.5 + 0.5;
+          const heat = 1 - (radius - inner) / (outer - inner);
+
+          const c = red
+            .clone()
+            .lerp(gold, heat)
+            .lerp(hot, Math.pow(heat, 2.3) * 0.85);
+
+          if (doppler > 0.76) {
+            c.lerp(blue, (doppler - 0.76) * 0.55);
           }
-        }, 34 + index * 2);
+
+          c.multiplyScalar(0.55 + doppler * 0.72 * frontBoost);
+
+          colors[i * 3 + 0] = c.r;
+          colors[i * 3 + 1] = c.g;
+          colors[i * 3 + 2] = c.b;
+
+          sizes[i] = size * (0.55 + Math.random() * 1.9) * (1.25 - t * 0.55);
+          randoms[i] = Math.random();
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3),
+        );
+        geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+        geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
+
+        const material = new THREE.ShaderMaterial({
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          vertexColors: true,
+          uniforms: {
+            uTime: { value: 0 },
+            uPixelRatio: { value: renderer.getPixelRatio() },
+          },
+          vertexShader: `
+          attribute float aSize;
+          attribute float aRandom;
+
+          varying vec3 vColor;
+
+          uniform float uTime;
+          uniform float uPixelRatio;
+
+          void main() {
+            vColor = color;
+
+            vec3 p = position;
+            float r = length(p.xz);
+            float orbital = uTime * (1.15 + 4.2 / max(r, .1));
+
+            float s = sin(orbital + aRandom * 6.2831);
+            float c = cos(orbital + aRandom * 6.2831);
+
+            mat2 rot = mat2(c, -s, s, c);
+
+            p.xz = rot * p.xz;
+            p.y += sin(uTime * 2.3 + r * 4.0 + aRandom * 9.0) * .035;
+
+            vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+
+            gl_PointSize = aSize * uPixelRatio * (440.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+          fragmentShader: `
+          varying vec3 vColor;
+
+          void main() {
+            vec2 uv = gl_PointCoord - vec2(.5);
+            float d = length(uv);
+            float alpha = smoothstep(.5, .03, d);
+
+            gl_FragColor = vec4(vColor, alpha);
+          }
+        `,
+        });
+
+        const points = new THREE.Points(geometry, material);
+
+        points.rotation.x = THREE.MathUtils.degToRad(72);
+        points.rotation.z = THREE.MathUtils.degToRad(-7);
+
+        return {
+          points,
+          material,
+        };
+      }
+
+      const backDisk = makeDisk({
+        count: 11000,
+        yLift: -0.045,
+        size: 0.031,
+        frontBoost: 0.86,
       });
-    }
 
-    setInterval(scrambleText, 2600);
-
-    animate('.spin-fast', {
-      rotate: '+=360',
-      duration: 4200,
-      loop: true,
-      ease: 'linear'
-    });
-
-    animate('.spin-layer', {
-      rotate: '+=360',
-      duration: 10500,
-      loop: true,
-      ease: 'linear'
-    });
-
-    animate('.spin-layer-reverse', {
-      rotate: '-=360',
-      duration: 8500,
-      loop: true,
-      ease: 'linear'
-    });
-
-    animate('.photon-ring', {
-      scale: [
-        { to: 1.03, duration: 1700 },
-        { to: .98, duration: 1700 }
-      ],
-      opacity: [
-        { to: 1, duration: 1700 },
-        { to: .72, duration: 1700 }
-      ],
-      loop: true,
-      alternate: true,
-      ease: 'inOutSine'
-    });
-
-    animate('.jet', {
-      opacity: [
-        { to: .95, duration: 1300 },
-        { to: .42, duration: 1700 }
-      ],
-      scaleX: [
-        { to: 1.08, duration: 1300 },
-        { to: .94, duration: 1700 }
-      ],
-      loop: true,
-      alternate: true,
-      ease: 'inOutSine'
-    });
-
-    animate('#blackhole', {
-      translateY: [
-        { to: -14, duration: 2800 },
-        { to: 8, duration: 2800 }
-      ],
-      scale: [
-        { to: 1.018, duration: 2800 },
-        { to: .992, duration: 2800 }
-      ],
-      loop: true,
-      alternate: true,
-      ease: 'inOutSine'
-    });
-
-    window.addEventListener('mousemove', (event) => {
-      const x = (event.clientX / window.innerWidth - .5) * 20;
-      const y = (event.clientY / window.innerHeight - .5) * 16;
-
-      animate('#blackhole', {
-        translateX: x,
-        translateY: y,
-        duration: 800,
-        ease: 'outExpo'
+      const frontDisk = makeDisk({
+        count: 15000,
+        yLift: 0.045,
+        size: 0.039,
+        frontBoost: 1.18,
       });
-    });
-  </script>
-</body>
+
+      root.add(backDisk.points);
+      root.add(frontDisk.points);
+
+      const jetMaterial = new THREE.MeshBasicMaterial({
+        color: 0x7fdcff,
+        transparent: true,
+        opacity: 0.075,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+
+      const jetTop = new THREE.Mesh(
+        new THREE.ConeGeometry(0.38, 8.2, 64, 1, true),
+        jetMaterial,
+      );
+
+      jetTop.position.y = 3.25;
+
+      const jetBottom = jetTop.clone();
+      jetBottom.position.y = -3.25;
+      jetBottom.rotation.z = Math.PI;
+
+      root.add(jetTop, jetBottom);
+
+      const title = document.querySelector("#animatedTitle");
+
+      /*
+      Sem espaço extra no final.
+      Isso corrige parte do bug visual que podia empurrar o último caractere.
+    */
+      const originalText = "change your mind";
+      const glyphs = "abcdefghijklmnopqrstuvwxyz0123456789@$#%&*";
+
+      function splitTitle(text) {
+        title.innerHTML = [...text]
+          .map((char) => {
+            if (char === " ") {
+              return '<span class="char space-char" aria-hidden="true">&nbsp;</span>';
+            }
+
+            return `<span class="char">${char}</span>`;
+          })
+          .join("");
+      }
+
+      splitTitle(originalText);
+
+      animate(".title .char", {
+        translateY: ["0.34em", "0em"],
+        opacity: [0, 1],
+        filter: ["blur(8px)", "blur(0px)"],
+        delay: (_, i) => i * 34,
+        duration: 1050,
+        ease: "outExpo",
+      });
+
+      function scrambleText() {
+        const chars = [...title.querySelectorAll(".title .char")];
+
+        chars.forEach((span, index) => {
+          const target = originalText[index];
+
+          if (!target || target === " ") {
+            return;
+          }
+
+          let frame = 0;
+          const maxFrames = 7 + Math.floor(Math.random() * 8);
+
+          function tick() {
+            if (frame < maxFrames) {
+              span.textContent =
+                glyphs[Math.floor(Math.random() * glyphs.length)];
+              span.style.opacity = String(0.64 + Math.random() * 0.36);
+
+              /*
+              Trava a letra na linha de base durante o scramble.
+              Isso impede o "d" de descer.
+            */
+              span.style.transform = "translateY(0em) scale(1)";
+
+              frame += 1;
+              requestAnimationFrame(tick);
+            } else {
+              span.textContent = target;
+              span.style.opacity = "1";
+              span.style.transform = "translateY(0em) scale(1)";
+
+              animate(span, {
+                scale: [1.09, 1],
+                opacity: [0.74, 1],
+                duration: 280,
+                ease: "outQuad",
+              });
+            }
+          }
+
+          setTimeout(() => requestAnimationFrame(tick), index * 32);
+        });
+      }
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (!reducedMotion) {
+        setInterval(scrambleText, 3900);
+      }
+
+      const mouse = new THREE.Vector2(0, 0);
+
+      window.addEventListener(
+        "pointermove",
+        (event) => {
+          mouse.x = (event.clientX / window.innerWidth - 0.5) * 2;
+          mouse.y = (event.clientY / window.innerHeight - 0.5) * 2;
+        },
+        { passive: true },
+      );
+
+      const clock = new THREE.Clock();
+
+      function render() {
+        const time = clock.getElapsedTime();
+
+        backDisk.material.uniforms.uTime.value = time * 0.34;
+        frontDisk.material.uniforms.uTime.value = time * 0.42;
+
+        photonRing.scale.setScalar(1 + Math.sin(time * 2.4) * 0.012);
+
+        aura.scale.setScalar(1 + Math.sin(time * 1.35) * 0.045);
+        aura.material.opacity = 0.1 + Math.sin(time * 1.15) * 0.035;
+
+        root.rotation.y += (mouse.x * 0.12 - root.rotation.y) * 0.035;
+        root.rotation.x +=
+          (THREE.MathUtils.degToRad(-10) - mouse.y * 0.065 - root.rotation.x) *
+          0.035;
+
+        camera.position.x += (mouse.x * 0.42 - camera.position.x) * 0.025;
+        camera.position.y += (4.1 - mouse.y * 0.22 - camera.position.y) * 0.025;
+        camera.lookAt(0, 0, 0);
+
+        composer.render();
+        requestAnimationFrame(render);
+      }
+
+      render();
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+        bloom.setSize(window.innerWidth, window.innerHeight);
+
+        backDisk.material.uniforms.uPixelRatio.value = renderer.getPixelRatio();
+        frontDisk.material.uniforms.uPixelRatio.value =
+          renderer.getPixelRatio();
+      });
+    </script>
+  </body>
 </html>

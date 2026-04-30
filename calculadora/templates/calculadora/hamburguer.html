@@ -1,0 +1,1165 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burger Rush</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Inter", "system-ui", "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 24px 80px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+      * {
+        user-select: none;
+      }
+
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        min-height: 100vh;
+        overflow: hidden;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(251, 191, 36, 0.35),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 15%,
+            rgba(248, 113, 113, 0.28),
+            transparent 32%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(34, 197, 94, 0.2),
+            transparent 35%
+          ),
+          linear-gradient(135deg, #fff7ed 0%, #fed7aa 45%, #ffedd5 100%);
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.64);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+      }
+
+      .ticket {
+        background:
+          linear-gradient(90deg, rgba(251, 191, 36, 0.18) 1px, transparent 1px),
+          linear-gradient(#fffaf0, #fff7ed);
+        background-size: 18px 18px;
+        position: relative;
+      }
+
+      .ticket::before,
+      .ticket::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        width: 42px;
+        height: 42px;
+        background: #fed7aa;
+        border-radius: 999px;
+        transform: translateX(-50%);
+      }
+
+      .ticket::before {
+        top: -24px;
+      }
+
+      .ticket::after {
+        bottom: -24px;
+      }
+
+      .plate {
+        width: min(430px, 82vw);
+        height: 120px;
+        border-radius: 999px;
+        background: radial-gradient(
+          ellipse at center,
+          #ffffff 0%,
+          #ffffff 48%,
+          #f1f5f9 49%,
+          #ffffff 72%
+        );
+        box-shadow:
+          inset 0 -10px 25px rgba(15, 23, 42, 0.08),
+          0 30px 60px rgba(120, 53, 15, 0.22);
+        position: relative;
+      }
+
+      .plate-shadow {
+        position: absolute;
+        width: 72%;
+        height: 20px;
+        left: 14%;
+        bottom: 20px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.12);
+        filter: blur(8px);
+      }
+
+      #burgerStack {
+        position: absolute;
+        left: 50%;
+        bottom: 72px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 5;
+      }
+
+      .layer {
+        position: relative;
+        width: 250px;
+        height: 32px;
+        margin-bottom: -8px;
+        border-radius: 999px;
+        box-shadow:
+          inset 0 -6px 10px rgba(0, 0, 0, 0.12),
+          0 8px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .bread-bottom {
+        width: 260px;
+        height: 44px;
+        border-radius: 22px 22px 35px 35px;
+        background: linear-gradient(180deg, #f2b35f 0%, #d97706 100%);
+        border-bottom: 5px solid rgba(120, 53, 15, 0.22);
+      }
+
+      .bread-top {
+        width: 270px;
+        height: 64px;
+        border-radius: 150px 150px 45px 45px;
+        background:
+          radial-gradient(circle at 25% 25%, #fff7bd 0 3px, transparent 4px),
+          radial-gradient(circle at 45% 18%, #fff7bd 0 3px, transparent 4px),
+          radial-gradient(circle at 65% 28%, #fff7bd 0 3px, transparent 4px),
+          radial-gradient(circle at 80% 22%, #fff7bd 0 2px, transparent 3px),
+          linear-gradient(180deg, #f7c873 0%, #d97706 100%);
+        border-bottom: 5px solid rgba(120, 53, 15, 0.18);
+      }
+
+      .meat {
+        width: 268px;
+        height: 35px;
+        background:
+          radial-gradient(
+            circle at 20% 45%,
+            rgba(255, 255, 255, 0.12) 0 4px,
+            transparent 5px
+          ),
+          radial-gradient(
+            circle at 68% 40%,
+            rgba(255, 255, 255, 0.1) 0 3px,
+            transparent 4px
+          ),
+          linear-gradient(180deg, #7c2d12 0%, #431407 100%);
+        border: 2px solid rgba(67, 20, 7, 0.55);
+      }
+
+      .cheese {
+        width: 275px;
+        height: 28px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #fde047 0%, #f59e0b 100%);
+        clip-path: polygon(
+          0 0,
+          100% 0,
+          94% 100%,
+          81% 62%,
+          67% 100%,
+          52% 62%,
+          38% 100%,
+          25% 62%,
+          12% 100%,
+          0 60%
+        );
+      }
+
+      .lettuce {
+        width: 282px;
+        height: 28px;
+        background: linear-gradient(180deg, #86efac 0%, #16a34a 100%);
+        clip-path: polygon(
+          0 45%,
+          8% 20%,
+          17% 55%,
+          27% 22%,
+          38% 58%,
+          50% 20%,
+          62% 55%,
+          73% 24%,
+          85% 60%,
+          94% 24%,
+          100% 48%,
+          100% 100%,
+          0 100%
+        );
+      }
+
+      .tomato {
+        width: 246px;
+        height: 25px;
+        background:
+          radial-gradient(
+            circle at 30% 50%,
+            rgba(254, 202, 202, 0.75) 0 8px,
+            transparent 9px
+          ),
+          radial-gradient(
+            circle at 68% 50%,
+            rgba(254, 202, 202, 0.75) 0 8px,
+            transparent 9px
+          ),
+          linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+        border: 2px solid rgba(153, 27, 27, 0.25);
+      }
+
+      .onion {
+        width: 245px;
+        height: 20px;
+        background:
+          radial-gradient(
+            ellipse at 22% 50%,
+            transparent 0 13px,
+            rgba(168, 85, 247, 0.8) 14px 18px,
+            transparent 19px
+          ),
+          radial-gradient(
+            ellipse at 52% 50%,
+            transparent 0 13px,
+            rgba(168, 85, 247, 0.8) 14px 18px,
+            transparent 19px
+          ),
+          radial-gradient(
+            ellipse at 82% 50%,
+            transparent 0 13px,
+            rgba(168, 85, 247, 0.8) 14px 18px,
+            transparent 19px
+          );
+        box-shadow: none;
+      }
+
+      .bacon {
+        width: 265px;
+        height: 22px;
+        border-radius: 12px;
+        background: linear-gradient(
+          90deg,
+          #991b1b 0%,
+          #ef4444 20%,
+          #fecaca 31%,
+          #b91c1c 42%,
+          #ef4444 65%,
+          #fecaca 75%,
+          #991b1b 100%
+        );
+        transform: rotate(-2deg);
+      }
+
+      .ketchup {
+        width: 250px;
+        height: 14px;
+        background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+        clip-path: polygon(
+          0 35%,
+          10% 10%,
+          22% 55%,
+          34% 15%,
+          48% 60%,
+          60% 20%,
+          74% 55%,
+          86% 15%,
+          100% 40%,
+          100% 100%,
+          0 100%
+        );
+      }
+
+      .mayo {
+        width: 245px;
+        height: 14px;
+        background: linear-gradient(180deg, #fff7ed 0%, #fde68a 100%);
+        clip-path: polygon(
+          0 45%,
+          10% 15%,
+          22% 60%,
+          36% 20%,
+          50% 60%,
+          64% 22%,
+          78% 58%,
+          90% 18%,
+          100% 42%,
+          100% 100%,
+          0 100%
+        );
+      }
+
+      .ingredient-button {
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease,
+          background 0.18s ease;
+      }
+
+      .ingredient-button:hover {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 16px 35px rgba(120, 53, 15, 0.18);
+      }
+
+      .ingredient-button.next {
+        outline: 3px solid rgba(251, 146, 60, 0.65);
+        background: rgba(255, 247, 237, 0.95);
+      }
+
+      .particle {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        pointer-events: none;
+        z-index: 999;
+        border-radius: 999px;
+      }
+
+      .progress-bar {
+        transform-origin: left;
+      }
+
+      @media (max-width: 900px) {
+        body {
+          overflow-y: auto;
+        }
+
+        .layer {
+          width: 210px;
+        }
+
+        .bread-bottom {
+          width: 220px;
+        }
+
+        .bread-top {
+          width: 230px;
+        }
+
+        .meat {
+          width: 226px;
+        }
+
+        .cheese {
+          width: 230px;
+        }
+
+        .lettuce {
+          width: 238px;
+        }
+
+        .tomato,
+        .onion,
+        .mayo,
+        .ketchup {
+          width: 210px;
+        }
+
+        .bacon {
+          width: 224px;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-900">
+    <main
+      class="relative min-h-screen flex items-center justify-center p-4 lg:p-8"
+    >
+      <div
+        class="absolute top-6 left-6 hidden md:flex items-center gap-3 glass rounded-full px-4 py-2 shadow-soft"
+      >
+        <div
+          class="w-9 h-9 rounded-full bg-orange-500 grid place-items-center text-white font-black"
+        >
+          B
+        </div>
+        <div>
+          <p class="text-sm font-bold leading-none">Burger Rush</p>
+          <p class="text-xs text-slate-500">Django single template</p>
+        </div>
+      </div>
+
+      <section
+        class="w-full max-w-7xl grid lg:grid-cols-[1fr_390px] gap-6 items-center"
+      >
+        <!-- Área principal -->
+        <div
+          class="glass rounded-[2.2rem] shadow-soft p-5 sm:p-8 lg:p-10 relative overflow-hidden"
+        >
+          <div
+            class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-orange-300/30 blur-3xl"
+          ></div>
+          <div
+            class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-red-300/25 blur-3xl"
+          ></div>
+
+          <div class="relative z-10">
+            <div
+              class="flex flex-col md:flex-row md:items-end md:justify-between gap-5"
+            >
+              <div>
+                <p
+                  class="uppercase tracking-[0.35em] text-xs font-extrabold text-orange-600 mb-3"
+                >
+                  Cozinha rápida
+                </p>
+                <h1
+                  class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none"
+                >
+                  Monte o hambúrguer
+                  <span class="block text-orange-600">na ordem certa.</span>
+                </h1>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div class="glass rounded-2xl px-4 py-3 text-center">
+                  <p class="text-xs text-slate-500 font-bold uppercase">
+                    Pontos
+                  </p>
+                  <p id="score" class="text-2xl font-black">0</p>
+                </div>
+                <div class="glass rounded-2xl px-4 py-3 text-center">
+                  <p class="text-xs text-slate-500 font-bold uppercase">
+                    Combo
+                  </p>
+                  <p id="streak" class="text-2xl font-black">0x</p>
+                </div>
+                <div class="glass rounded-2xl px-4 py-3 text-center">
+                  <p class="text-xs text-slate-500 font-bold uppercase">
+                    Vidas
+                  </p>
+                  <p id="lives" class="text-2xl font-black">3</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timer -->
+            <div class="mt-8">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-bold text-slate-600"
+                  >Tempo do pedido</span
+                >
+                <span id="timer" class="text-sm font-black text-orange-700"
+                  >25s</span
+                >
+              </div>
+              <div
+                class="h-3 bg-white/70 rounded-full overflow-hidden shadow-inner"
+              >
+                <div
+                  id="timeBar"
+                  class="progress-bar h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Cena -->
+            <div class="mt-10 flex flex-col items-center justify-center">
+              <div
+                id="message"
+                class="mb-5 h-12 px-5 rounded-full glass flex items-center justify-center font-bold text-slate-700"
+              >
+                Pegue o pedido e comece pela base.
+              </div>
+
+              <div
+                id="scene"
+                class="relative h-[360px] w-full flex items-end justify-center"
+              >
+                <div
+                  class="absolute top-2 w-48 h-48 rounded-full bg-orange-300/20 blur-3xl"
+                ></div>
+
+                <div class="plate">
+                  <div class="plate-shadow"></div>
+                  <div id="burgerStack"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div
+              id="ingredients"
+              class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3"
+            ></div>
+
+            <div class="mt-5 flex flex-wrap gap-3 justify-center">
+              <button
+                onclick="undoLast()"
+                class="px-5 py-3 rounded-2xl bg-white/75 hover:bg-white font-bold shadow-lg transition"
+              >
+                ↩️ Desfazer
+              </button>
+
+              <button
+                onclick="clearBurger()"
+                class="px-5 py-3 rounded-2xl bg-white/75 hover:bg-white font-bold shadow-lg transition"
+              >
+                🧹 Limpar
+              </button>
+
+              <button
+                onclick="startNewGame()"
+                class="px-5 py-3 rounded-2xl bg-slate-950 hover:bg-slate-800 text-white font-bold shadow-lg transition"
+              >
+                🔥 Novo jogo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pedido -->
+        <aside
+          class="ticket rounded-[2rem] shadow-soft p-6 lg:p-7 min-h-[620px] relative overflow-hidden"
+        >
+          <div class="relative z-10">
+            <div class="flex items-center justify-between">
+              <div>
+                <p
+                  class="text-xs uppercase tracking-[.28em] text-orange-700 font-black"
+                >
+                  Pedido
+                </p>
+                <h2 class="text-3xl font-black mt-1">Comanda</h2>
+              </div>
+              <div
+                class="w-14 h-14 rounded-2xl bg-orange-500 grid place-items-center text-3xl shadow-lg"
+              >
+                🍔
+              </div>
+            </div>
+
+            <div class="my-6 border-t-2 border-dashed border-orange-300"></div>
+
+            <div>
+              <p class="text-sm font-bold text-slate-500 mb-3">Cliente quer:</p>
+              <h3 id="orderName" class="text-2xl font-black leading-tight"></h3>
+              <p
+                id="orderDescription"
+                class="text-sm text-slate-600 mt-2 leading-relaxed"
+              ></p>
+            </div>
+
+            <div class="mt-7">
+              <p class="text-sm font-bold text-slate-500 mb-3">
+                Ordem correta:
+              </p>
+              <div id="orderList" class="space-y-2"></div>
+            </div>
+
+            <div class="my-6 border-t-2 border-dashed border-orange-300"></div>
+
+            <div class="rounded-3xl bg-white/65 p-4 border border-orange-100">
+              <p class="text-sm font-bold text-slate-500">
+                Próximo ingrediente
+              </p>
+              <div
+                id="nextIngredient"
+                class="mt-3 text-2xl font-black text-orange-700"
+              >
+                Base
+              </div>
+            </div>
+
+            <div class="mt-6 rounded-3xl bg-slate-950 text-white p-5">
+              <p class="text-sm font-bold text-orange-300">Dica</p>
+              <p class="text-sm text-white/80 mt-2 leading-relaxed">
+                Clique nos ingredientes na mesma ordem da comanda. Se errar,
+                perde vida e o hambúrguer treme.
+              </p>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const ingredientData = {
+        "bread-bottom": {
+          name: "Pão base",
+          emoji: "🍞",
+          className: "bread-bottom",
+        },
+        meat: {
+          name: "Carne",
+          emoji: "🥩",
+          className: "meat",
+        },
+        cheese: {
+          name: "Queijo",
+          emoji: "🧀",
+          className: "cheese",
+        },
+        lettuce: {
+          name: "Alface",
+          emoji: "🥬",
+          className: "lettuce",
+        },
+        tomato: {
+          name: "Tomate",
+          emoji: "🍅",
+          className: "tomato",
+        },
+        onion: {
+          name: "Cebola roxa",
+          emoji: "🧅",
+          className: "onion",
+        },
+        bacon: {
+          name: "Bacon",
+          emoji: "🥓",
+          className: "bacon",
+        },
+        ketchup: {
+          name: "Ketchup",
+          emoji: "🔴",
+          className: "ketchup",
+        },
+        mayo: {
+          name: "Maionese",
+          emoji: "⚪",
+          className: "mayo",
+        },
+        "bread-top": {
+          name: "Pão topo",
+          emoji: "🍞",
+          className: "bread-top",
+        },
+      };
+
+      const orders = [
+        {
+          name: "Clássico da Casa",
+          description: "Simples, bonito e sem bagunça. O básico bem feito.",
+          time: 24,
+          items: ["bread-bottom", "meat", "cheese", "ketchup", "bread-top"],
+        },
+        {
+          name: "Verde Crocante",
+          description: "Mais leve, com salada e molho na medida.",
+          time: 25,
+          items: ["bread-bottom", "lettuce", "tomato", "mayo", "bread-top"],
+        },
+        {
+          name: "Duplo Fome Real",
+          description: "Pedido grande para cliente sem paciência.",
+          time: 30,
+          items: [
+            "bread-bottom",
+            "meat",
+            "cheese",
+            "bacon",
+            "meat",
+            "cheese",
+            "bread-top",
+          ],
+        },
+        {
+          name: "Especial Roxinho",
+          description: "Com cebola roxa e bacon para dar moral.",
+          time: 28,
+          items: [
+            "bread-bottom",
+            "meat",
+            "cheese",
+            "onion",
+            "bacon",
+            "ketchup",
+            "bread-top",
+          ],
+        },
+        {
+          name: "Salada Braba",
+          description: "Parece saudável, mas ainda é hambúrguer.",
+          time: 26,
+          items: [
+            "bread-bottom",
+            "lettuce",
+            "tomato",
+            "onion",
+            "cheese",
+            "mayo",
+            "bread-top",
+          ],
+        },
+      ];
+
+      let currentOrder = null;
+      let stack = [];
+      let score = 0;
+      let streak = 0;
+      let lives = 3;
+      let timeLeft = 25;
+      let totalTime = 25;
+      let timerInterval = null;
+      let acceptingInput = true;
+
+      const burgerStack = document.getElementById("burgerStack");
+      const ingredientsContainer = document.getElementById("ingredients");
+      const orderName = document.getElementById("orderName");
+      const orderDescription = document.getElementById("orderDescription");
+      const orderList = document.getElementById("orderList");
+      const nextIngredient = document.getElementById("nextIngredient");
+      const timer = document.getElementById("timer");
+      const timeBar = document.getElementById("timeBar");
+      const scoreEl = document.getElementById("score");
+      const streakEl = document.getElementById("streak");
+      const livesEl = document.getElementById("lives");
+      const message = document.getElementById("message");
+
+      function renderIngredientButtons() {
+        ingredientsContainer.innerHTML = "";
+
+        Object.entries(ingredientData).forEach(([key, item]) => {
+          const button = document.createElement("button");
+
+          button.className =
+            "ingredient-button glass rounded-3xl p-4 text-left shadow-lg";
+          button.dataset.type = key;
+          button.onclick = () => addIngredient(key);
+
+          button.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-2xl shadow">
+              ${item.emoji}
+            </div>
+            <div>
+              <p class="font-black text-slate-900">${item.name}</p>
+              <p class="text-xs text-slate-500 font-bold">Adicionar</p>
+            </div>
+          </div>
+        `;
+
+          ingredientsContainer.appendChild(button);
+        });
+      }
+
+      function startNewGame() {
+        score = 0;
+        streak = 0;
+        lives = 3;
+        updateHud();
+        newOrder();
+
+        anime({
+          targets: "section",
+          scale: [0.98, 1],
+          opacity: [0.4, 1],
+          duration: 500,
+          easing: "easeOutExpo",
+        });
+      }
+
+      function newOrder() {
+        acceptingInput = true;
+        stack = [];
+        burgerStack.innerHTML = "";
+
+        currentOrder = orders[Math.floor(Math.random() * orders.length)];
+        totalTime = currentOrder.time;
+        timeLeft = totalTime;
+
+        orderName.textContent = currentOrder.name;
+        orderDescription.textContent = currentOrder.description;
+
+        renderOrderList();
+        updateNextIngredient();
+        updateMessage("Pedido novo. Comece pela base.");
+
+        clearInterval(timerInterval);
+        updateTimer();
+        timerInterval = setInterval(tick, 1000);
+
+        anime({
+          targets: ".ticket",
+          translateX: [40, 0],
+          opacity: [0.4, 1],
+          duration: 450,
+          easing: "easeOutExpo",
+        });
+      }
+
+      function renderOrderList() {
+        orderList.innerHTML = "";
+
+        currentOrder.items.forEach((key, index) => {
+          const item = ingredientData[key];
+
+          const row = document.createElement("div");
+          row.className =
+            "order-row flex items-center justify-between rounded-2xl bg-white/70 px-4 py-3 border border-orange-100";
+          row.dataset.index = index;
+
+          row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-orange-100 grid place-items-center font-black text-orange-700">
+              ${index + 1}
+            </span>
+            <span class="font-bold">${item.emoji} ${item.name}</span>
+          </div>
+          <span class="status text-slate-300 font-black">○</span>
+        `;
+
+          orderList.appendChild(row);
+        });
+      }
+
+      function addIngredient(type) {
+        if (!acceptingInput || !currentOrder) return;
+
+        const expected = currentOrder.items[stack.length];
+
+        if (type !== expected) {
+          wrongMove();
+          return;
+        }
+
+        const item = ingredientData[type];
+        const layer = document.createElement("div");
+        layer.className = `layer ${item.className}`;
+        layer.dataset.type = type;
+
+        burgerStack.insertBefore(layer, burgerStack.firstChild);
+        stack.push(type);
+
+        anime({
+          targets: layer,
+          translateY: [-110, 0],
+          opacity: [0, 1],
+          rotate: [anime.random(-7, 7), 0],
+          scale: [0.92, 1],
+          duration: 520,
+          easing: "easeOutBack",
+        });
+
+        markOrderItem(stack.length - 1);
+        updateNextIngredient();
+
+        if (stack.length === currentOrder.items.length) {
+          winOrder();
+        } else {
+          updateMessage(
+            `Boa. Agora vai de ${ingredientData[currentOrder.items[stack.length]].name}.`,
+          );
+        }
+      }
+
+      function markOrderItem(index) {
+        const row = document.querySelector(`.order-row[data-index="${index}"]`);
+        if (!row) return;
+
+        row.classList.add("bg-green-100");
+        row.querySelector(".status").textContent = "✓";
+        row.querySelector(".status").className =
+          "status text-green-600 font-black";
+
+        anime({
+          targets: row,
+          scale: [1, 1.04, 1],
+          duration: 300,
+          easing: "easeOutQuad",
+        });
+      }
+
+      function wrongMove() {
+        lives--;
+        streak = 0;
+        updateHud();
+        updateMessage("Ingrediente errado. Olha a comanda direito.");
+
+        anime({
+          targets: "#scene",
+          translateX: [-14, 14, -10, 10, -5, 5, 0],
+          duration: 420,
+          easing: "easeInOutSine",
+        });
+
+        anime({
+          targets: "body",
+          backgroundColor: ["#fee2e2", "#fff7ed"],
+          duration: 420,
+          easing: "easeOutQuad",
+        });
+
+        if (lives <= 0) {
+          gameOver();
+        }
+      }
+
+      function winOrder() {
+        acceptingInput = false;
+        clearInterval(timerInterval);
+
+        const bonus = Math.max(0, timeLeft) * 4;
+        const orderPoints = 100 + bonus + streak * 25;
+
+        score += orderPoints;
+        streak++;
+        updateHud();
+
+        updateMessage(`Pedido entregue! +${orderPoints} pontos.`);
+
+        anime({
+          targets: "#burgerStack",
+          scale: [1, 1.15, 1],
+          translateY: [0, -18, 0],
+          duration: 700,
+          easing: "easeOutElastic(1, .6)",
+        });
+
+        createConfetti();
+
+        setTimeout(() => {
+          newOrder();
+        }, 1500);
+      }
+
+      function gameOver() {
+        acceptingInput = false;
+        clearInterval(timerInterval);
+
+        updateMessage("Fim de jogo. A cozinha pegou fogo.");
+
+        anime({
+          targets: "#burgerStack",
+          rotate: [0, -8, 8, -5, 5, 0],
+          opacity: [1, 0.35],
+          duration: 800,
+          easing: "easeInOutSine",
+        });
+
+        setTimeout(() => {
+          lives = 3;
+          streak = 0;
+          stack = [];
+          updateHud();
+          newOrder();
+        }, 1500);
+      }
+
+      function tick() {
+        timeLeft--;
+        updateTimer();
+
+        if (timeLeft <= 5) {
+          anime({
+            targets: "#timer",
+            scale: [1, 1.18, 1],
+            duration: 300,
+            easing: "easeOutQuad",
+          });
+        }
+
+        if (timeLeft <= 0) {
+          timeoutOrder();
+        }
+      }
+
+      function timeoutOrder() {
+        clearInterval(timerInterval);
+        acceptingInput = false;
+        lives--;
+        streak = 0;
+        updateHud();
+
+        updateMessage("Tempo acabou. Esse cliente foi embora.");
+
+        anime({
+          targets: "#burgerStack",
+          translateY: [0, 20],
+          opacity: [1, 0.25],
+          duration: 500,
+          easing: "easeInQuad",
+        });
+
+        if (lives <= 0) {
+          setTimeout(gameOver, 600);
+        } else {
+          setTimeout(newOrder, 1200);
+        }
+      }
+
+      function updateTimer() {
+        timer.textContent = `${Math.max(timeLeft, 0)}s`;
+
+        const percent = Math.max(timeLeft / totalTime, 0);
+        timeBar.style.transform = `scaleX(${percent})`;
+
+        if (percent < 0.25) {
+          timeBar.className =
+            "progress-bar h-full bg-gradient-to-r from-red-600 to-red-400 rounded-full";
+        } else if (percent < 0.5) {
+          timeBar.className =
+            "progress-bar h-full bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full";
+        } else {
+          timeBar.className =
+            "progress-bar h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full";
+        }
+      }
+
+      function updateNextIngredient() {
+        const next = currentOrder.items[stack.length];
+
+        document.querySelectorAll(".ingredient-button").forEach((btn) => {
+          btn.classList.remove("next");
+          if (btn.dataset.type === next) {
+            btn.classList.add("next");
+          }
+        });
+
+        if (!next) {
+          nextIngredient.textContent = "Pedido completo";
+          return;
+        }
+
+        nextIngredient.textContent = `${ingredientData[next].emoji} ${ingredientData[next].name}`;
+      }
+
+      function updateHud() {
+        scoreEl.textContent = score;
+        streakEl.textContent = `${streak}x`;
+        livesEl.textContent = lives;
+      }
+
+      function updateMessage(text) {
+        message.textContent = text;
+
+        anime({
+          targets: "#message",
+          translateY: [-8, 0],
+          opacity: [0.5, 1],
+          duration: 250,
+          easing: "easeOutQuad",
+        });
+      }
+
+      function undoLast() {
+        if (!acceptingInput || stack.length === 0) return;
+
+        stack.pop();
+
+        const first = burgerStack.firstElementChild;
+        if (first) {
+          anime({
+            targets: first,
+            translateY: [0, -70],
+            opacity: [1, 0],
+            scale: [1, 0.85],
+            duration: 260,
+            easing: "easeInQuad",
+            complete: () => first.remove(),
+          });
+        }
+
+        renderOrderList();
+
+        stack.forEach((_, index) => {
+          markOrderItem(index);
+        });
+
+        updateNextIngredient();
+        updateMessage("Ingrediente removido.");
+      }
+
+      function clearBurger() {
+        if (!acceptingInput) return;
+
+        stack = [];
+
+        anime({
+          targets: "#burgerStack .layer",
+          translateY: -80,
+          opacity: 0,
+          scale: 0.85,
+          delay: anime.stagger(35),
+          duration: 300,
+          easing: "easeInQuad",
+          complete: () => {
+            burgerStack.innerHTML = "";
+          },
+        });
+
+        renderOrderList();
+        updateNextIngredient();
+        updateMessage("Hambúrguer limpo. Recomeça com calma.");
+      }
+
+      function createConfetti() {
+        const colors = [
+          "#f97316",
+          "#ef4444",
+          "#22c55e",
+          "#eab308",
+          "#a855f7",
+          "#06b6d4",
+        ];
+
+        for (let i = 0; i < 90; i++) {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+          particle.style.left = "50%";
+          particle.style.top = "50%";
+
+          document.body.appendChild(particle);
+
+          anime({
+            targets: particle,
+            translateX: anime.random(-420, 420),
+            translateY: anime.random(-300, 300),
+            rotate: anime.random(0, 720),
+            scale: [1, 0],
+            opacity: [1, 0],
+            duration: anime.random(700, 1400),
+            easing: "easeOutExpo",
+            complete: () => particle.remove(),
+          });
+        }
+      }
+
+      renderIngredientButtons();
+      startNewGame();
+
+      anime({
+        targets: ".ingredient-button",
+        translateY: [30, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(55),
+        duration: 600,
+        easing: "easeOutExpo",
+      });
+    </script>
+  </body>
+</html>
